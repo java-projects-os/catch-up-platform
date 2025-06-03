@@ -1,0 +1,166 @@
+@startuml
+package catch-up-backend as catch_up_backend  {
+    package news {
+        package domain {
+            package model {
+                package aggregates {
+                    class FavoriteSource <<AggregateRoot>> {
+                        - Long id
+                        - String newsApiKey
+                        - String sourceId
+                        - Date createdAt
+                        - Date updatedAt
+                        # FavoriteSource()
+                        + FavoriteSource(CreateFavoriteSourceCommand command)
+                    }
+                }
+                package commands {
+                    class CreateFavoriteSourceCommand <<record>> {
+                        - String newsApiKey
+                        - String sourceId
+                        + CreateFavoriteSourceCommand
+                    }
+                }
+                package queries {
+                    class GetAllFavoriteSourcesByNewsApiKeyQuery <<record>> {
+                        - String newsApiKey
+                        + GetAllFavoriteSourcesByNewsApiKeyQuery
+                    }
+                    class GetFavoriteSourceByIdQuery <<record>> {
+                        - Long id
+                        + GetFavoriteSourceByIdQuery
+                    }
+                    class GetFavoriteSourceByNewsApiKeyAndSourceIdQuery <<record>> {
+                        - String newsApiKey
+                        - String sourceId
+                        + GetFavoriteSourceByNewsApiKeyAndSourceIdQuery
+                    }
+                }
+            }
+            package services {
+                interface FavoriteSourceCommandService {
+                    + Optional<FavoriteSource> handle(CreateFavoriteSourceCommand command)
+                }
+                interface FavoriteSourceQueryService {
+                    + List<FavoriteSource> handle(GetAllFavoriteSourcesByNewsApiKeyQuery query)
+                    + Optional<FavoriteSource> handle(GetFavoriteSourceByIdQuery query)
+                    + Optional<FavoriteSource> handle(GetFavoriteSourceByNewsApiKeyAndSourceIdQuery query)
+                }
+            }
+        }
+        package infrastructure {
+            package persistence {
+                package jpa {
+                    interface FavoriteSourceRepository {
+                        List<FavoriteSource> findAllByNewsApiKey(String newsApiKey)
+                        boolean existsByNewsApiKeyAndSourceId(String newApiKey, String sourceId)
+                        Optional<FavoriteSource> findByNewsApiKeyAndSourceId(String newsApiKey, String sourceId)
+                    }
+                }
+            }
+        }
+        package application {
+            package internal {
+                package commandservices {
+                    class FavoriteSourceCommandServiceImpl {
+                        - final FavoriteSourceRepository favoriteSourceRepository
+                        + FavoriteSourceCommandServiceImpl(FavoriteSourceRepository favoriteSourceRepository)
+                        Optional<FavoriteSource> handle(CreateFavoriteSourceCommand command)
+                    }
+                }
+                package queryservices {
+                    class FavoriteSourceQueryServiceImpl {
+                        - final FavoriteSourceRepository favoriteSourceRepository
+                        + FavoriteSourceQueryServiceImpl(FavoriteSourceRepository favoriteSourceRepository)
+                        + List<FavoriteSource> handle(GetAllFavoriteSourcesByNewsApiKeyQuery query)
+                        + Optional<FavoriteSource> handle(GetFavoriteSourceByIdQuery query)
+                        + Optional<FavoriteSource> handle(GetFavoriteSourceByNewsApiKeyAndSourceIdQuery query)
+                    }
+                }
+            }
+        }
+        package interfaces {
+            package rest {
+                package resources {
+                    class CreateFavoriteSourceResource <<record>> {
+                        - String newsApiKey
+                        - String sourceId
+                        + CreateFavoriteSourceResource
+                    }
+                    class FavoriteSourceResource <<record>> {
+                        - Long id
+                        - String newsApiKey
+                        - String sourceId
+                    }
+                }
+                package transform {
+                    class CreateFavoriteSourceCommandFromResourceAssembler {
+                        + static CreateFavoriteSourceCommand toCommandFromResource(CreateFavoriteSourceResource resource)
+                    }
+                    class FavoriteSourceResourceFromEntityAssembler {
+                        + static FavoriteSourceResource toResourceFromEntity(FavoriteSource entity)
+                    }
+                }
+                package controllers {
+                    class FavoriteSourcesController {
+                        - final FavoriteSourceCommandService favoriteSourceCommandService
+                        - final FavoriteSourceQueryService favoriteSourceQueryService
+                        + FavoriteSourcesController(FavoriteSourceCommandService favoriteSourceCommandService, FavoriteSourceQueryService favoriteSourceQueryService)
+                        + ResponseEntity<FavoriteSourceResource> createFavoriteSource(@RequestBody CreateFavoriteSourceResource resource)
+                        + ResponseEntity<FavoriteSourceResource> getFavoriteSourceById(@PathVariable Long id)
+                        + public ResponseEntity<?> getFavoriteSourcesWithParameters(
+                              @Parameter(name = "params", hidden = true)
+                              @RequestParam Map<String, String> params)
+                        - ResponseEntity<List<FavoriteSourceResource>> getAllFavoriteSourcesByNewsApiKey(String newsApiKey)
+                        - ResponseEntity<FavoriteSourceResource> getFavoriteSourceByNewsApiKeyAndSourceId(String newsApiKey, String sourceId)
+                    }
+                }
+            }
+        }
+    }
+    package shared.infrastructure.persistence.jpa.strategy {
+        class SnakeCasePhysicalNamingStrategy {
+            + Identifier toPhysicalCatalogName(Identifier identifier, JdbcEnvironment jdbcEnvironment)
+            + Identifier toPhysicalSchemaName(Identifier identifier, JdbcEnvironment jdbcEnvironment)
+            + Identifier toPhysicalTableName(Identifier identifier, JdbcEnvironment jdbcEnvironment)
+            + Identifier toPhysicalSequenceName(Identifier identifier, JdbcEnvironment jdbcEnvironment)
+            + Identifier toPhysicalColumnName(Identifier identifier, JdbcEnvironment jdbcEnvironment)
+            - Identifier toSnakeCase(final Identifier identifier)
+            - Identifier toSnakeCase(final Identifier identifier)
+        }
+    }
+}
+package org.springframework.data.domain {
+    class AbstractAggregateRoot {}
+}
+package org.hibernate.boot.model.naming {
+    interface PhysicalNamingStrategy {}
+}
+FavoriteSource ..> CreateFavoriteSourceCommand
+FavoriteSourceCommandService ..> CreateFavoriteSourceCommand
+FavoriteSourceQueryService ..> GetAllFavoriteSourcesByNewsApiKeyQuery
+FavoriteSourceQueryService ..> GetFavoriteSourceByIdQuery
+FavoriteSourceQueryService ..> GetFavoriteSourceByNewsApiKeyAndSourceIdQuery
+FavoriteSourceRepository ..> FavoriteSource
+FavoriteSourceCommandServiceImpl ..|> FavoriteSourceCommandService
+FavoriteSourceCommandServiceImpl --> FavoriteSourceRepository
+FavoriteSourceQueryServiceImpl ..|> FavoriteSourceQueryService
+FavoriteSourceQueryServiceImpl --> FavoriteSourceRepository
+CreateFavoriteSourceCommandFromResourceAssembler ..> CreateFavoriteSourceCommand
+CreateFavoriteSourceCommandFromResourceAssembler ..> CreateFavoriteSourceResource
+FavoriteSourceResourceFromEntityAssembler ..> FavoriteSourceResource
+FavoriteSourceResourceFromEntityAssembler ..> FavoriteSource
+FavoriteSourcesController --> FavoriteSourceCommandService
+FavoriteSourcesController --> FavoriteSourceQueryService
+FavoriteSourcesController ..> CreateFavoriteSourceResource
+FavoriteSourcesController ..> FavoriteSourceResource
+FavoriteSourcesController ..> CreateFavoriteSourceCommandFromResourceAssembler
+FavoriteSourcesController ..> FavoriteSourceResourceFromEntityAssembler
+FavoriteSourcesController ..> FavoriteSource
+FavoriteSourcesController ..> CreateFavoriteSourceCommand
+FavoriteSourcesController ..> GetAllFavoriteSourcesByNewsApiKeyQuery
+FavoriteSourcesController ..> GetFavoriteSourceByIdQuery
+FavoriteSourcesController ..> GetFavoriteSourceByNewsApiKeyAndSourceIdQuery
+SnakeCasePhysicalNamingStrategy ..|> PhysicalNamingStrategy
+FavoriteSource --|> AbstractAggregateRoot
+@enduml

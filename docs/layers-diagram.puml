@@ -1,0 +1,22 @@
+@startuml
+package catch-up-backend as catch_up_backend  {
+    package news {
+        package domain {}
+        package infrastructure {}
+        package application {}
+        package interfaces {}
+    }
+    package shared {
+        package infrastructure {}
+    }
+}
+package org.springframework.data.domain {}
+package org.hibernate.boot.model.naming {}
+catch_up_backend.news.domain ..> org.springframework.data.domain
+catch_up_backend.news.infrastructure ..> catch_up_backend.news.domain
+catch_up_backend.news.application ..> catch_up_backend.news.domain
+catch_up_backend.news.application ..> catch_up_backend.news.infrastructure
+catch_up_backend.news.interfaces ..> catch_up_backend.news.domain
+catch_up_backend.news.interfaces ..> catch_up_backend.news.application
+catch_up_backend.shared.infrastructure ..> org.hibernate.boot.model.naming
+@enduml
