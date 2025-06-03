@@ -41,4 +41,3 @@ public interface FavoriteSourceQueryService {
      */
     Optional<FavoriteSource> handle(GetFavoriteSourceByNewsApiKeyAndSourceIdQuery query);
 }
-

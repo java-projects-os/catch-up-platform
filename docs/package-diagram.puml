@@ -1,0 +1,51 @@
+@startuml
+package catch-up-backend as catch_up_backend  {
+    package news {
+        package domain {
+            package model {
+                package aggregates {}
+                package commands {}
+                package queries {}
+            }
+            package services {}
+        }
+        package infrastructure.persistence {
+            package jpa {}
+        }
+        package application.internal {
+            package commandservices {}
+            package queryservices {}
+        }
+        package interfaces.rest {
+            package resources {}
+            package transform {}
+            package controllers {}
+        }
+    }
+    package shared.infrastructure.persistence.jpa {
+        package strategy {}
+    }
+}
+package org.springframework.data {
+    package domain {}
+}
+package org.hibernate.boot.model {
+    package naming {}
+}
+aggregates ..> org.springframework.data.domain
+commandservices ..> services
+commandservices ..> catch_up_backend.news.infrastructure.persistence.jpa
+commandservices ..> commands
+commandservices ..> aggregates
+queryservices ..> services
+queryservices ..> catch_up_backend.news.infrastructure.persistence.jpa
+queryservices ..> queries
+controllers ..> resources
+controllers ..> transform
+controllers ..> aggregates
+controllers ..> commands
+controllers ..> queries
+controllers ..> commandservices
+controllers ..> queryservices
+strategy ..> org.hibernate.boot.model.naming
+@enduml

@@ -1,4 +1,3 @@
-
 package com.acme.catchup.platform.news.interfaces.rest.resources;
 
 /**
@@ -20,4 +19,3 @@ public record CreateFavoriteSourceResource(String newsApiKey, String sourceId) {
             throw new IllegalArgumentException("sourceId cannot be null or empty");
     }
 }
-

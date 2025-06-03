@@ -39,4 +39,3 @@ public interface FavoriteSourceRepository extends JpaRepository<FavoriteSource, 
      */
     Optional<FavoriteSource> findByNewsApiKeyAndSourceId(String newsApiKey, String sourceId);
 }
-

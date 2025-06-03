@@ -21,4 +21,3 @@ public interface FavoriteSourceCommandService {
      */
     Optional<FavoriteSource> handle(CreateFavoriteSourceCommand command);
 }
-

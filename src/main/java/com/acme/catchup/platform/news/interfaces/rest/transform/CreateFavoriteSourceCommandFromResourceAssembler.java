@@ -1,4 +1,3 @@
-
 package com.acme.catchup.platform.news.interfaces.rest.transform;
 
 import com.acme.catchup.platform.news.domain.model.commands.CreateFavoriteSourceCommand;
@@ -18,4 +17,3 @@ public class CreateFavoriteSourceCommandFromResourceAssembler {
         return new CreateFavoriteSourceCommand(resource.newsApiKey(), resource.sourceId());
     }
 }
-

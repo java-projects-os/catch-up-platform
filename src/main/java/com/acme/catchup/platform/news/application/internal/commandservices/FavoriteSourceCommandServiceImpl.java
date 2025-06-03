@@ -1,4 +1,3 @@
-
 package com.acme.catchup.platform.news.application.internal.commandservices;
 
 import com.acme.catchup.platform.news.domain.model.aggregates.FavoriteSource;
@@ -38,4 +37,3 @@ public class FavoriteSourceCommandServiceImpl implements FavoriteSourceCommandSe
         return Optional.of(createdFavoriteSource);
     }
 }
-

@@ -14,4 +14,3 @@ public record GetFavoriteSourceByNewsApiKeyAndSourceIdQuery(String newsApiKey, S
             throw new IllegalArgumentException("sourceId cannot be null or empty");
     }
 }
-

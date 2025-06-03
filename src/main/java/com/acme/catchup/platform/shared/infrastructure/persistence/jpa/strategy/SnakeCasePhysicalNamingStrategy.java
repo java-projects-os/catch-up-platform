@@ -1,4 +1,3 @@
-
 package com.acme.catchup.platform.shared.infrastructure.persistence.jpa.strategy;
 
 import org.hibernate.boot.model.naming.Identifier;
@@ -92,4 +91,3 @@ public class SnakeCasePhysicalNamingStrategy implements PhysicalNamingStrategy {
         return Identifier.toIdentifier(newName);
     }
 }
-

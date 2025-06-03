@@ -52,4 +52,3 @@ public class FavoriteSourceQueryServiceImpl implements FavoriteSourceQueryServic
         return favoriteSourceRepository.findByNewsApiKeyAndSourceId(query.newsApiKey(), query.sourceId());
     }
 }
-

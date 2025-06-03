@@ -61,4 +61,3 @@ public class FavoriteSource extends AbstractAggregateRoot<FavoriteSource> {
         this.sourceId = command.sourceId();
     }
 }
-

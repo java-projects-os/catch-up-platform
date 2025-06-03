@@ -1,4 +1,3 @@
-
 package com.acme.catchup.platform.news.interfaces.rest.transform;
 
 import com.acme.catchup.platform.news.domain.model.aggregates.FavoriteSource;
@@ -18,4 +17,3 @@ public class FavoriteSourceResourceFromEntityAssembler {
         return new FavoriteSourceResource(entity.getId(), entity.getNewsApiKey(), entity.getSourceId());
     }
 }
-

@@ -22,4 +22,3 @@ public record CreateFavoriteSourceCommand(String newsApiKey, String sourceId) {
             throw new IllegalArgumentException("sourceId cannot be null or empty");
     }
 }
-
